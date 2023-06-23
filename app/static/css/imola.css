@@ -1,0 +1,31 @@
+
+#sidebar {
+box-sizing: border-box;
+box-shadow: rgba(149, 157, 165, 0.6) 0px 1px 3px;
+padding: 5px;
+margin-left: 5px;
+border-radius: 10px;
+}
+
+#footer{
+padding-left: 5px;
+text-align: center;
+}
+
+.control-label {
+  font-family: "Segoe UI", "Segoe UI Web (West European)", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgb(50, 49, 48);
+  box-sizing: border-box;
+  box-shadow: none;
+  margin: 0px;
+  display: block;
+  padding: 5px 0px;
+  overflow-wrap: break-word;
+}
+
+.ms-Fabric--isFocusHidden{
+
+}
