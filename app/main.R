@@ -29,35 +29,30 @@ uog_theme <- bs_theme(
 )
 
 card1 <- makeCard(
-  "Welcome to shiny.fluent demo!",
+  "Welcome to a shiny.fluent demo!",
   div(
     Text("shiny.fluent is a package that allows you to build Shiny apps using Microsoft's Fluent UI."),
-    Text("Use the menu on the left to explore live demos of all available components.")
-  ))
-
-card2 <- makeCard(
-  "shiny.react makes it easy to use React libraries in Shiny apps.",
-  div(
-    Text("To make a React library convenient to use from Shiny, we need to write an R package that wraps it - for example, a shiny.fluent package for Microsoft's Fluent UI, or shiny.blueprint for Palantir's Blueprint.js."),
-    Text("Communication and other issues in integrating Shiny and React are solved and standardized in shiny.react package."),
-    Text("shiny.react strives to do as much as possible automatically, but there's no free lunch here, so in all cases except trivial ones you'll need to do some amount of manual work. The more work you put into a wrapper package, the less work your users will have to do while using it.")
+    Text(" Use the menu on the left to explore live demos of all available components.")
   ))
 
 home_page <- makePage(
   "This is a Fluent UI app built in Shiny",
-  "shiny.react + Fluent UI = shiny.fluent",
-  div(card1, card2)
+  "",
+  # "shiny.react + Fluent UI = shiny.fluent",
+  div(card1)
 )
 
 app_navigation <- Nav(
   groups = list(
-    list(links = list(
-      list(name = 'Home', url = '#!/', key = 'home', icon = 'Home'),
-      list(name = 'Analysis', url = '#!/other', key = 'analysis', icon = 'AnalyticsReport'),
-      list(name = 'shiny.fluent', url = 'http://github.com/Appsilon/shiny.fluent', key = 'repo', icon = 'GitGraph'),
-      list(name = 'shiny.react', url = 'http://github.com/Appsilon/shiny.react', key = 'shinyreact', icon = 'GitGraph'),
-      list(name = 'Appsilon', url = 'http://appsilon.com', key = 'appsilon', icon = 'WebAppBuilderFragment')
-    ))
+    list(
+      links = list(
+        list(name = 'Home', url = '#!/', key = 'home', icon = 'Home'),
+        list(name = 'Analysis', url = '#!/other', key = 'analysis', icon = 'AnalyticsReport'),
+        list(name = 'Calendar', url = 'http://github.com/Appsilon/shiny.fluent', key = 'repo', icon = 'GitGraph'),
+        list(name = 'Code', url = '#!/code', key = 'code', icon = 'GitGraph'),
+        list(name = 'PR Website', url = 'http://www.pr.uoguelph.ca', key = 'appsilon', icon = 'WebAppBuilderFragment')
+      )
+    )
   ),
   initialSelectedKey = 'home',
   styles = list(
@@ -69,12 +64,13 @@ app_navigation <- Nav(
   )
 )
 
+
 app_footer <- Stack(
   horizontal = TRUE,
   horizontalAlign = 'space-between',
   tokens = list(childrenGap = 20),
   Text(variant = "medium", "Built with ❤ by Adam", block=TRUE),
-  Text(variant = "medium", nowrap = FALSE, "If you have suggestions, reach out to us at asadowsk@uoguelph.ca"),
+  Text(variant = "medium", nowrap = FALSE, "If you have suggestions, please reach out to asadowsk@uoguelph.ca"),
   Text(variant = "medium", nowrap = FALSE, "Data source: Megamation Database")
 )
 
@@ -85,21 +81,26 @@ ui <- function(id) {
 
   commandbar_header <- CommandBar(
     items = list(
-      CommandBarItem("New", "Add", subitems = list(
-        CommandBarItem("Email message", "Mail", key = ns("emailMessage"), href = "mailto:me@example.com"),
-        CommandBarItem("Calendar event", "Calendar", key = ns("calendarEvent"))
-      )
-      ),
-      CommandBarItem("Upload", "Upload"),
+      # CommandBarItem("New", "Add", subitems = list(
+
+      # Can't use some of these yet  ------------------------------------------------
+      ## See https://github.com/Appsilon/shiny.fluent/issues/44
+
+      CommandBarItem("Make email", "Mail", key = ns("emailMessage"), href = "mailto:asadowsk@uoguelph.ca"),
+      # CommandBarItem("Calendar event", "Calendar", key = ns("calendarEvent"))
+      # )
+      # ),
+      # CommandBarItem("Upload", "Upload"),
       CommandBarItem("Share analysis", "Share"),
-      CommandBarItem("Download report", "Download")
+      CommandBarItem("Download data", "Download", key = ns("ms_button"))
     ),
     farItems = list(
-      CommandBarItem("Grid view", "Tiles", iconOnly = TRUE, key = ns("grid")),
+      # CommandBarItem("Grid view", "Tiles", iconOnly = TRUE, key = ns("grid")),
       CommandBarItem("Info", "Info", iconOnly = TRUE, key = ns("info"))
     ),
     style = list(width = "100%")
   )
+
 
   app_header <- tagList(
     img(src = "static/images/pr-logo-words2.jpg", style = "width: 250px"),
@@ -122,8 +123,8 @@ ui <- function(id) {
   }
 
   analysis_page <- makePage(
-    "Employees",
-    "Filtered",
+    "Analysis",
+    "",
     ## Why we need div here? W/o we get Error in makePage: unused arguments
     contents = div(
       Stack(
@@ -135,27 +136,37 @@ ui <- function(id) {
           d$inputs,
           size = 4,
           style = "max-height: 550px; max-width: 200px"
-          ),
+        ),
         makeCard(
           "Employee Data",
           style = "max-height: 550px; overflow: auto",
           content = uiOutput(ns("data"))
-          )
-        ),
-    makeCard(
-      "Code to Make Table",
-      content = verbatimTextOutput(ns("display_code"))
-      ),
-    downloadButton(
-      ns("download_script"),
-      "Download reproducible report with code"
+        )
       )
     )
+  )
+
+  code_page <- makePage(
+    "Code to Reproduce Analysis",
+    "",
+    makeCard(
+      "",
+      content =
+        tagList(
+          verbatimTextOutput(ns("display_code")),
+          downloadButton(
+            ns("download_script"),
+            "Download reproducible report with code"
+          )
+        )
     )
+  )
 
   router <- router_ui(
     route("/", home_page),
-    route("other", analysis_page)
+    route("other", analysis_page),
+    route("code", code_page)
+
   )
 
   fluentPage(
